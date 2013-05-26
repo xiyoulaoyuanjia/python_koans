@@ -17,7 +17,7 @@ class DiceSet(object):
     def roll(self, n):
         # Needs implementing!
         # Tip: random.randint(min, max) can be used to generate random numbers
-        pass
+		self._values=[random.randint(1,n) for i in range(0,n)]
 
 
 class AboutDiceProject(Koan):
@@ -29,6 +29,7 @@ class AboutDiceProject(Koan):
         dice = DiceSet()
 
         dice.roll(5)
+        print dice.values
         self.assertTrue(isinstance(dice.values, list), "should be a list")
         self.assertEqual(5, len(dice.values))
         for value in dice.values:

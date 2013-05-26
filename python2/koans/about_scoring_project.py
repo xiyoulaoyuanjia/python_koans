@@ -35,7 +35,25 @@ from runner.koan import *
 
 def score(dice):
     # You need to write this method
-    pass
+	diceSet=set(dice)
+	points = 0
+
+	for number in diceSet:
+			if number ==1 :
+				temp = dice.count(number)/3
+				temp1 = dice.count(number) % 3
+				points+= (1000*temp) + 100*temp1
+			elif number == 5 :
+				temp = dice.count(number)/3
+				temp1 = dice.count(number) % 3
+				points+= (100*5*temp) + 50*temp1
+			elif dice.count(number) >= 3:
+				temp = dice.count(number)/3
+				points+=(100*number*temp)
+				temp1 = dice.count(number) % 3
+				if number == 5:
+					points += (50* temp1)
+	return points
 
 
 class AboutScoringProject(Koan):

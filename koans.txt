@@ -1,0 +1,360 @@
+basestirng 是什么？
+
+
+assertMatch 如何使用？
+
+
+
+注意哪里开哪里闭区间？
+noms = ['peanut', 'butter', 'and', 'jelly']
+self.assertEqual(['peanut'], noms[0:1])
+self.assertEqual([], noms[2:2])
+
+
+这些都是空？ 
+        self.assertEqual([], noms[4:0])
+        self.assertEqual([], noms[4:100])
+        self.assertEqual([], noms[5:0])
+
+
+这些都是对的。。
+        self.assertEqual([0,1,2,3,4], range(5))
+        self.assertEqual([5,6,7,8], range(5, 9))
+
+
+搞错意思了。。。。
+stack = [10, 20, 30, 40]
+popped_value = stack.pop(1)
+
+# 这种用法不常见呀。。。
+
+       from collections import deque
+
+        queue = deque([1, 2]) 
+        queue.append('last')
+
+        self.assertEqual([1,2,'last'], list(queue))
+
+        popped_value = queue.popleft()
+        self.assertEqual(1, popped_value)
+        self.assertEqual([2,'last'], list(queue))
+
+list 的 fromkeys 用法，这里需要注意
+
+        cards = {}.fromkeys(
+            ('red warrior', 'green elf', 'blue valkyrie', 'yellow dwarf',
+             'confused looking zebra'),
+            42)
+
+这种用法确实不常用呀
+
+        value1 = 'one'
+        value2 = 2
+        string = "The values are {0} and {1}".format(value1, value2)
+        self.assertEqual("The values are one and 2", string)
+
+
+
+
+## 怎么觉得这种语法这么麻烦了。。应该还有更简单的
+
+  def test_any_python_expression_may_be_interpolated(self):
+        import math  # import a standard python module with math functions
+
+        decimal_places = 4
+        string = "The square root of 5 is {0:.{1}f}".format(math.sqrt(5), \
+            decimal_places)
+        self.assertEqual('The square root of 5 is 2.2361', string)
+
+
+## 注意ord的意思是 ASCCII码值?
+
+self.assertEqual(97, ord('a'))
+
+
+
+## 正则表达式的这种方法很好呀。。。
+
+        string = "the,rain;in,spain"
+        pattern = re.compile(',|;')
+
+        words = pattern.split(string)
+
+## raw_strings 这种用法很有意思 不用每一个转义
+
+       string = r'\n'
+
+
+# 这两个是什么意思？ 有什么区别？
+
+        self.assertEqual("Guido", 'guido'.capitalize())
+
+        self.assertEqual("Guido Van Rossum", 'guido van rossum'.title())
+
+
+# most confusing
+
+    self.assertEqual((), tuple())  # Sometimes less confusing
+    self.assertEqual(("S","u","r","p","r","i","s","e","!"), tuple("Surprise!"))
+
+
+对于 truple 而言 顺序很重要呀
+        lat = (37, 14, 6, 'N')
+        lon = (115, 48, 40, 'W')
+        place = ('Area 51', lat, lon)
+        self.assertEqual(('Area 51',(37, 14, 6, 'N'),(115, 48, 40, 'W')), place)
+
+
+
+	
+私有变量会在代码生成之前被转换为长格式（变为公有）。转换机制是这样的：在变量前端插入类名，再在前端加入一个下划线字符。这就是所谓的私有变量轧压（Private name mangling）。
+
+   class Dog(object):
+        def name(self):
+            return "Fido"
+
+        def _tail(self):
+            # Prefixing a method with an underscore implies private scope
+            return "wagging"
+
+        def __password(self):
+            return 'password'  # Genius!
+
+
+        # But this still is!
+        self.assertEqual(__, rover._Dog__password())
+
+
+
+
+python 中 set 模块的使用
+
+>>> set(["a","b"])
+set(['a', 'b'])
+>>> 
+
+可以看成 去重复的 其作用也可以从下面看出来
+
+   def test_convert_the_set_into_a_list_to_sort_it(self):
+        self.assertEqual(['1','2','3','4','5'], sorted(set('13245')))
+
+python 中的 与 或等运算
+
+        scotsmen = set(['MacLeod', 'Wallace', 'Willie'])
+        warriors = set(['MacLeod', 'Wallace', 'Leonidas'])
+
+        self.assertEqual(set(["Willie"]), scotsmen - warriors)
+        self.assertEqual(set(['MacLeod','Wallace','Willie','Leonidas']), scotsmen | warriors)
+        self.assertEqual(set(['MacLeod','Wallace']), scotsmen & warriors)
+        self.assertEqual(set(['Willie','Leonidas']), scotsmen ^ warriors)
+
+
+集合运算 还听有意思哈
+
+
+    def test_we_can_compare_subsets(self):
+        self.assertEqual(True, set('cake') <= set('cherry cake'))
+        self.assertEqual(True, set('cake').issubset(set('cherry cake')))
+
+        self.assertEqual(False, set('cake') > set('pie'))
+~                                                                      
+
+
+range(1,6) 没有6 奥，这个很容易错
+
+
+
+  
+stages = iter(['alpha', 'beta', 'gamma'])  next 迭代器中next的用法
+
+
+
+## 迭代器的使用
+## list 作用到一个迭代器时的效果 直到next 为空?
+## 如果在一个函数里面用到了yield表达式，那么这个函数就是一个generator函数
+
+
+    def test_generator_expressions_are_a_one_shot_deal(self):
+        dynamite = ('Boom!' for n in range(3))
+## 上面生成了一个迭代器?
+
+        attempt1 = list(dynamite)
+        attempt2 = list(dynamite)
+
+        self.assertEqual(['Boom!','Boom!','Boom!'], list(attempt1))
+        self.assertEqual([], list(attempt2))
+
+
+下面的这段用法还是很诡异的?
+
+generator.send()
+
+继续执行一个generator函数。value这个参数变成了当前的yield表达式的值。send返回下一个yield产生的值，如果后面没有yield了，会抛出StopIteration异常。当调用send()来启动generator的时候，value这个参数必须是None，因为这个时候没有yield表达式来接受参数
+
+    def generator_with_coroutine(self):
+        result = yield
+        yield result
+
+    def test_generators_can_take_coroutines(self):
+        generator = self.generator_with_coroutine()
+
+        # THINK ABOUT IT:
+        # Why is this line necessary?
+        #
+        # Hint: Read the "Specification: Sending Values into Generators"
+        #       section of http://www.python.org/dev/peps/pep-0342/
+        next(generator)
+
+        self.assertEqual(__, generator.send(1 + 2)) 
+
+
+## 访问变量的另一种方法
+    def test_you_can_also_access_the_value_out_using_getattr_and_dict(self):
+	self.assertEqual('Fido', fido.__dict__["_name"])
+
+## property函数 的使用 这里需要注意两点
+1. 首先定义class的时候必须是object的子类
+2. x = property(getx, setx, delx, "I'm the 'x' property.")    通过property的定义，当获取成员x的值时，就会调用getx函数，当给成员x赋值时，就会调用setx函数，当删除x时，就会调用delx函数
+
+确实使用property函数 可以简单不少..
+
+使用装饰器同样可以达到上述的效果..
+
+    class Dog4(object):
+        def __init__(self):
+            self._name = None
+
+        @property
+        def name(self):
+            return self._name
+
+        @name.setter
+        def name(self, a_name):
+            self._name = a_name
+
+assertRaises 用来检测 self.Dog5 失败抛出的错误类型
+
+    def test_args_must_match_init(self):
+            self.assertRaises(TypeError, self.Dog5)  # Evaluates self.Dog5()
+
+
+built_in_classes_can_be_be_monkey_patched 这种方法也很好用
+
+    class MyInt(int):
+        pass
+
+    def test_subclasses_of_built_in_classes_can_be_be_monkey_patched(self):
+        self.MyInt.is_even = lambda self: (self % 2) == 0
+
+
+
+## 这里 需要考虑 类里面的方法具有 im_self 属性
+
+class Class(object):
+    def method(self):
+        return "parrot"
+
+
+class AboutMethodBindings(Koan):
+    def test_methods_are_bound_to_an_object(self):
+        obj = Class()
+        self.assertEqual(__, obj.method.im_self == obj)
+
+
+__call__() 函数会在绑定实例的时候调用
+
+  # Hierarchy:
+    #               Animal
+    #              /     \
+    #            Pig   Spider  Nameable
+    #              \      |      /
+    #                 Spiderpig
+
+   def test_left_hand_side_inheritance_tends_to_be_higher_priority(self):
+        jeff = self.Spiderpig()
+        self.assertEqual("pink", jeff.color())
+
+加入上面有的各个class 方法有重合的 该使用哪个呢?
+
+MRO = Method Resolution Order
+
+每一个class 都有一个 MRO 属性.里面存放的各个类的顺序即为各个方法的优先级
+
+例如上面图所示的模型中 
+
+        mro = type(self.Spiderpig()).__mro__
+        self.assertEqual('Spiderpig', mro[0].__name__)
+        self.assertEqual('Pig', mro[1].__name__)
+        self.assertEqual('Spider', mro[2].__name__)
+        self.assertEqual('Animal', mro[3].__name__)
+        self.assertEqual('Nameable', mro[4].__name__)
+        self.assertEqual('object', mro[5].__name__)
+
+
+## 如下所示告诉我们 实例与类的 属性是不同的..
+        def __init__(self):
+            self._name = None
+
+        def get_name_from_instance(self):
+            return self._name
+
+        def set_name_from_instance(self, name):
+            self._name = name
+
+        @classmethod
+        def get_name(cls):
+            return cls._name
+
+        @classmethod
+        def set_name(cls, name):
+            cls._name = name
+
+
+        self.assertEqual("Fido", fido.get_name_from_instance())
+        self.assertEqual("Rover", self.Dog3.get_name())
+
+
+
+## 注意 可以 share 也可以不 share?
+
+    def test_classes_and_instances_do_not_share_instance_attributes(self):
+        fido = self.Dog3()
+        fido.set_name_from_instance("Fido")
+        fido.set_name("Rover")
+        self.assertEqual("Fido", fido.get_name_from_instance())
+        self.assertEqual("Rover", self.Dog3.get_name())
+
+    def test_classes_and_instances_do_share_class_attributes(self):
+        fido = self.Dog3()
+        fido.set_name("Fido")
+        self.assertEqual("Fido", fido.get_name())
+        self.assertEqual(__, self.Dog3.get_name())
+
+
+## 当  catcher = self.MinimalCatcher() catcher.my_method() 不会调用 __getattr__
+##  只有调用的方法没有时才会调用__getattr__ ??
+
+    class MinimalCatcher(object):
+        class DuffObject(object):
+            pass
+
+        def __init__(self):
+            self.no_of_getattr_calls = 0
+
+        def __getattr__(self, attr_name):
+            self.no_of_getattr_calls += 1
+            return self.DuffObject
+
+        def my_method(self):
+            pass
+
+##  记录删除 的属性名称.. 不过这个真心不常用呀...
+
+        def __delattr__(self, attr_name):
+            self.last_deletion = attr_name
+        del sale.jellies
+        self.assertEqual("jellies", sale.last_deletion)
+
+
+
+
